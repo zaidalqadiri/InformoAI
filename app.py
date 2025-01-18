@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
+from docx import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
@@ -13,16 +14,26 @@ def main():
 
     load_dotenv()
 
-    pdf = st.file_uploader("Upload your pdf", type='pdf')
+    uploaded_file = st.file_uploader("Upload your file", type=['pdf', 'docx'])
     vectorStore = None
 
-    if pdf is not None:
-        pdf_reader = PdfReader(pdf)
+    if uploaded_file is not None:
+        file_extension = uploaded_file.name.split('.')[-1].lower()
         text = ''
 
-        for page in pdf_reader.pages:
-            text += page.extract_text()
+        # Handle PDF files
+        if file_extension == 'pdf':
+            pdf_reader = PdfReader(uploaded_file)
+
+            for page in pdf_reader.pages:
+                text += page.extract_text()
         
+         # Handle DOCX files
+        elif file_extension == 'docx':
+            doc = Document(uploaded_file)
+            for paragraph in doc.paragraphs:
+                text += paragraph.text + '\n'
+
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200,
@@ -32,7 +43,7 @@ def main():
         # Divide data into chunks
         chunks = text_splitter.split_text(text=text)
         
-        store_name = pdf.name[:-4]  # remove the file formats
+        store_name = uploaded_file.name.split('.')[0]  # remove the file formats
 
         # Check if FAISS index exists
         if os.path.exists(f"{store_name}.faiss") and os.path.exists(f"{store_name}.json"):
@@ -48,8 +59,8 @@ def main():
             vectorStore.save_local(store_name)
             st.success(f"Embeddings saved successfully")
 
-    # user question
-    query = st.text_input("Ask questions about your file:")
+    # User question
+    query = st.text_input(f"Ask questions about your file...")
     st.write(f"You: {query}")
 
     if query:
@@ -59,7 +70,7 @@ def main():
             # Semantic search to find chunks most similar to the query
             docs = vectorStore.similarity_search(query=query, k=3)
             
-            # initialize LLM and run the chain
+            # Initialize LLM and run the chain
             llm = OpenAI()
             chain = load_qa_chain(llm=llm, chain_type='stuff')
             response = chain.run(input_documents=docs, question=query)
