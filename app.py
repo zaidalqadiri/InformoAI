@@ -53,14 +53,17 @@ def main():
     st.write(f"You: {query}")
 
     if query:
-        # Semantic search to find chunks most similar to the query
-        docs = vectorStore.similarity_search(query=query, k=3)
-        
-        # initialize LLM and run the chain
-        llm = OpenAI()
-        chain = load_qa_chain(llm=llm, chain_type='stuff')
-        response = chain.run(input_documents=docs, question=query)
-        st.write(f"InformoAI: {response}")
+        if vectorStore is None:
+            st.error("Please upload a file")
+        else:
+            # Semantic search to find chunks most similar to the query
+            docs = vectorStore.similarity_search(query=query, k=3)
+            
+            # initialize LLM and run the chain
+            llm = OpenAI()
+            chain = load_qa_chain(llm=llm, chain_type='stuff')
+            response = chain.run(input_documents=docs, question=query)
+            st.write(f"InformoAI: {response}")
 
 if __name__ == '__main__':
     main()
