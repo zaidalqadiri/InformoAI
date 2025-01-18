@@ -1,5 +1,4 @@
 import streamlit as st
-import pickle
 import os
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
@@ -51,17 +50,17 @@ def main():
 
     # user question
     query = st.text_input("Ask questions about your file:")
-    st.write(query)
+    st.write(f"You: {query}")
 
     if query:
         # Semantic search to find chunks most similar to the query
         docs = vectorStore.similarity_search(query=query, k=3)
         
+        # initialize LLM and run the chain
         llm = OpenAI()
         chain = load_qa_chain(llm=llm, chain_type='stuff')
         response = chain.run(input_documents=docs, question=query)
-        st.write(response)
-
+        st.write(f"InformoAI: {response}")
 
 if __name__ == '__main__':
     main()
