@@ -71,5 +71,5 @@ streamlit run app.py
 This will launch a local web server, and you can view the app in your browser at http://localhost:8501.
 
 ## Notes:
-Make sure you have a functional internet connection for both the document upload process and for querying OpenAI’s API.
-The .env file should be correctly set up with your API key for smooth functioning.
+* Make sure you have a functional internet connection for both the document upload process and for querying OpenAI’s API.
+* The .env file should be correctly set up with your API key for smooth functioning.
