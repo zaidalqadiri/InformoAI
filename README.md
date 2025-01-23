@@ -20,8 +20,7 @@ InformoAI is a Retrieval-Augmented Generation (RAG) based chatbot that answers q
 ![Answer](images/Screenshot%202025-01-22%20230353.png)
 
 ## Usage 
-1. Usage
-Upload a Document: Click on the "Upload your file" button to upload a PDF or DOCX file.
+1. Upload a Document: Click on the "Upload your file" button to upload a PDF or DOCX file.
 2. Ask Questions: Type your questions in the text input box. The chatbot will provide answers based on the content of the uploaded file.
 3. View Results: The app will display the answer provided by InformoAI.
 
@@ -45,7 +44,7 @@ pip install -r requirements.txt
 Clone this repository to your local machine using Git:
 
 ```bash
-git clone https://github.com/yourusername/informoai.git
+git clone https://github.com/zaidalqadiri/informoai.git
 cd informoai
 ```
 
